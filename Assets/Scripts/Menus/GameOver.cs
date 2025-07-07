@@ -6,21 +6,29 @@ using UnityEngine.UI;
 
 public class GameOver : MonoBehaviour
 {
-    public Button retryButton;
-    public Button mainMenu;
+    [SerializeField] private string levelSceneName = "Level";
+    [SerializeField] private string mainMenuSceneName = "MainMenu";
+    [SerializeField] private Button retryButton;
+    [SerializeField] private Button mainMenuButton;
 
-    void Start()
+    private void Start()
     {
         if (retryButton != null)
-            retryButton.onClick.AddListener(() => ChangeScene("Level"));
+            retryButton.onClick.AddListener(() => ChangeScene(levelSceneName));
 
-        if (mainMenu != null)
-            mainMenu.onClick.AddListener(() => ChangeScene("MainMenu"));
-
+        if (mainMenuButton != null)
+            mainMenuButton.onClick.AddListener(() => ChangeScene(mainMenuSceneName));
     }
 
-    void ChangeScene(string sceneName)
+    private void ChangeScene(string sceneName)
     {
-        SceneManager.LoadScene(sceneName);
+        if (!string.IsNullOrEmpty(sceneName))
+        {
+            SceneManager.LoadScene(sceneName);
+        }
+        else
+        {
+            Debug.LogWarning("Scene name is not assigned in GameOver script.");
+        }
     }
 }
