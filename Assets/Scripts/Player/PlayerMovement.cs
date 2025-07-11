@@ -3,13 +3,15 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     private float horizontal;
-    private float speed = 2f;
-    private float jumpingPower = 5f;
+    private float speed = 5f;
+    private float jumpingPower = 10f;
     private bool isFacingRight = true;
 
-    private bool isGrounded = false;
+    public bool isGrounded = false;
+    public bool isJumping = false;
+    public bool isTurning = false;
 
-    [SerializeField] private Rigidbody2D rb;
+    [SerializeField] public Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
 
@@ -29,7 +31,8 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
         }
-
+        if (rb.velocity.y > 0f) { isJumping = true; }
+        else if (rb.velocity.y <= 0f) { isJumping = false; }
         Flip();
     }
 
