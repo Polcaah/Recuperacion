@@ -10,10 +10,13 @@ public class Collisions : MonoBehaviour
     [SerializeField] LayerMask groundLayer;
 
     BoxCollider2D col2D;
-
+    Mario mario;
+    Move move;
     private void Awake()
     {
         col2D = GetComponent<BoxCollider2D>();
+        mario = GetComponent<Mario>();
+        move = GetComponent<Move>();
     }
     public bool Grounded()
     {
@@ -41,5 +44,31 @@ public class Collisions : MonoBehaviour
     private void FixedUpdate()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+        {
+            mario.Hit();
+        }
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        /*PlayerHit playerHit = collision.GetComponent<PlayerHit>();
+        if(playerHit != null)
+        {
+            playerHit.Hit();
+            move.BounceUp();
+        }*/
+        Enemy enemy = collision.GetComponent<Enemy>();
+        if (enemy != null)
+        {
+            enemy.Stomped(transform);
+            move.BounceUp();
+        }
+    }
+    public void Dead()
+    {
+        gameObject.layer = LayerMask.NameToLayer("PlayerDead");
     }
 }

@@ -25,6 +25,9 @@ public class Move : MonoBehaviour
 
     [SerializeField]Rigidbody2D rb;
     Collisions collisions;
+
+    public bool inputMoveEnabled = true;
+
     Animations animations;
     private void Awake()
     {
@@ -78,20 +81,23 @@ public class Move : MonoBehaviour
             }
         }
         currentDirection = Direction.None;
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (inputMoveEnabled)
         {
-            if (grounded)
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                Jump();
+                if (grounded)
+                {
+                    Jump();
+                }
             }
-        }
-        if(Input.GetKey(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            currentDirection = Direction.Left;
-        }
-        if (Input.GetKey(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            currentDirection = Direction.Right;
+            if (Input.GetKey(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+            {
+                currentDirection = Direction.Left;
+            }
+            if (Input.GetKey(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+            {
+                currentDirection = Direction.Right;
+            }
         }
     }
     private void FixedUpdate()
@@ -154,6 +160,18 @@ public class Move : MonoBehaviour
             rb.AddForce(force, ForceMode2D.Impulse);
             animations.Jumping(true);
         }
+    }
+    public void Dead()
+    {
+        inputMoveEnabled = false;
+        rb.velocity = Vector2.zero;
+        rb.gravityScale = 1;
+        rb.AddForce(Vector2.up*5f,ForceMode2D.Impulse);
+    }
+    public void BounceUp()
+    {
+        rb.velocity = Vector2.zero;
+        rb.AddForce(Vector2.up * 10f, ForceMode2D.Impulse);
     }
     void MoveRight()
     {

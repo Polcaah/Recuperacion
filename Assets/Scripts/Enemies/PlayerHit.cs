@@ -2,17 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Goomba : Enemy
+public class PlayerHit : MonoBehaviour
 {
-    protected override void Awake()
+    Animator animator;
+    private void Awake()
     {
-        base.Awake();
+        animator = GetComponent<Animator>();
     }
-    public override void Stomped(Transform player)
+    public void Hit()
     {
         animator.SetTrigger("Dead");
         gameObject.layer = LayerMask.NameToLayer("OnlyGround");
         Destroy(gameObject, 1f);
-        autoMovement.PauseMovement();
+        GetComponent<AutoMovement>().PauseMovement();
     }
 }
