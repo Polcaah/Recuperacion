@@ -15,16 +15,6 @@ public class Collisions : MonoBehaviour
     {
         col2D = GetComponent<BoxCollider2D>();
     }
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     public bool Grounded()
     {
         Vector2 footLeft = new Vector2(col2D.bounds.center.x - col2D.bounds.extents.x, col2D.bounds.center.y);

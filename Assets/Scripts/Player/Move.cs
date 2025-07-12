@@ -32,13 +32,10 @@ public class Move : MonoBehaviour
         collisions = GetComponent<Collisions>();
         animations = GetComponent<Animations>();
     }
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         defaultGravity = rb.gravityScale;
     }
-
-    // Update is called once per frame
     void Update()
     {
         bool grounded = collisions.Grounded();
@@ -57,7 +54,7 @@ public class Move : MonoBehaviour
             }*/
             if (rb.velocity.y > 0f)
             {
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (Input.GetKey(KeyCode.Space))
                 {
                     jumpTimer += Time.deltaTime;
                 }
@@ -88,11 +85,11 @@ public class Move : MonoBehaviour
                 Jump();
             }
         }
-        if(Input.GetKeyUp(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
+        if(Input.GetKey(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
             currentDirection = Direction.Left;
         }
-        if (Input.GetKeyUp(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
         {
             currentDirection = Direction.Right;
         }
@@ -121,7 +118,7 @@ public class Move : MonoBehaviour
                 currentVelocity -= (acceleration + friction) * Time.deltaTime;
                 isTurning = true;
             }
-            else if (currentVelocity > maxVelocity)
+            else if (currentVelocity > -maxVelocity)
             {
                 currentVelocity -= acceleration * Time.deltaTime;
                 transform.localScale = new Vector2(-1, 1);
