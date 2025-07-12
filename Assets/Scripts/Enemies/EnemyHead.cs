@@ -25,7 +25,7 @@ public class EnemyHead : MonoBehaviour
         }
         else
         {
-            collision.GetComponent<Health>()?.TakeDamage(goomba.GetDamage());
+            collision.GetComponent<Move>()?.TakeDamage(goomba.GetDamage());
         }
     }
 }

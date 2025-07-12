@@ -39,7 +39,7 @@ public class Goomba : MonoBehaviour
         {
             if (!collision.collider.GetComponentInChildren<EnemyHead>())
             {
-                collision.collider.GetComponent<Health>()?.TakeDamage(damage);
+                collision.collider.GetComponent<Move>()?.TakeDamage(damage);
             }
         }
         else
@@ -64,4 +64,6 @@ public class Goomba : MonoBehaviour
     {
         return damage;
     }
+
+    public bool IsDead() => isDead;
 }
