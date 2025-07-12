@@ -13,14 +13,14 @@ public class EnemyHead : MonoBehaviour
         Rigidbody2D rb = collision.GetComponent<Rigidbody2D>();
         if (rb == null) return;
 
-        bool isFalling = rb.velocity.y <= 0;
+        if (goomba == null || goomba.IsDead()) return;
 
+        bool isFalling = rb.velocity.y <= 0;
         bool isAbove = collision.transform.position.y > transform.position.y;
 
         if (isAbove && isFalling)
         {
             goomba.KillEnemy();
-
             rb.velocity = new Vector2(rb.velocity.x, 8f);
         }
         else
