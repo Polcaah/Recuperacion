@@ -30,4 +30,8 @@ public class Animations : MonoBehaviour
     {
         animator.SetBool("Turning", isTurning);
     }
+    public void Dead()
+    {
+        animator.SetTrigger("Dead");
+    }
 }
