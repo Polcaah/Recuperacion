@@ -4,20 +4,15 @@ using UnityEngine;
 
 public class Goomba : MonoBehaviour
 {
-    [SerializeField] private float movementDistance;
     [SerializeField] private float speed;
     [SerializeField] private float damage;
     [SerializeField] private GameObject deathEffect;
-    private bool isDead = false;
 
-    private bool movingLeft;
-    private float leftEdge;
-    private float rightEdge;
+    private bool isDead = false;
+    private bool movingLeft = true;
 
     private void Awake()
     {
-        leftEdge = transform.position.x - movementDistance;
-        rightEdge = transform.position.x + movementDistance;
         Vector3 scale = transform.localScale;
         scale.x = -Mathf.Abs(scale.x);
         transform.localScale = scale;
@@ -25,30 +20,8 @@ public class Goomba : MonoBehaviour
 
     private void Update()
     {
-        if (movingLeft)
-        {
-            if (transform.position.x > leftEdge)
-            {
-                transform.position = new Vector3(transform.position.x - speed * Time.deltaTime, transform.position.y, transform.position.z);
-            }
-            else
-            {
-                movingLeft = false;
-                Flip();
-            }
-        }
-        else
-        {
-            if (transform.position.x < rightEdge)
-            {
-                transform.position = new Vector3(transform.position.x + speed * Time.deltaTime, transform.position.y, transform.position.z);
-            }
-            else
-            {
-                movingLeft = true;
-                Flip();
-            }
-        }
+        float direction = movingLeft ? -1f : 1f;
+        transform.position += new Vector3(direction * speed * Time.deltaTime, 0f, 0f);
     }
 
     private void Flip()
@@ -58,14 +31,21 @@ public class Goomba : MonoBehaviour
         transform.localScale = scale;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.CompareTag("Player"))
+        if (isDead) return;
+
+        if (collision.collider.CompareTag("Player"))
         {
-            if (!collision.GetComponentInChildren<EnemyHead>())
+            if (!collision.collider.GetComponentInChildren<EnemyHead>())
             {
-                collision.GetComponent<Health>()?.TakeDamage(damage);
+                collision.collider.GetComponent<Health>()?.TakeDamage(damage);
             }
+        }
+        else
+        {
+            movingLeft = !movingLeft;
+            Flip();
         }
     }
 
@@ -79,6 +59,7 @@ public class Goomba : MonoBehaviour
 
         Destroy(gameObject);
     }
+
     public float GetDamage()
     {
         return damage;
