@@ -6,7 +6,8 @@ public class Mario : MonoBehaviour
 {
     enum State { Default=0, Big=1, Fire=2};
     State currentState = State.Default;
-    public GameObject stompBox;
+    [SerializeField] GameObject stompBox;
+    [SerializeField] GameObject headBox;
     Move move;
     Collisions collisions;
     Animations animations;
@@ -29,6 +30,14 @@ public class Mario : MonoBehaviour
         else
         {
             stompBox.SetActive(false);
+        }
+        if(rb.velocity.y > 0)
+        {
+            headBox.SetActive(true);
+        }
+        else
+        {
+            headBox.SetActive(false);
         }
         if (Input.GetKeyDown(KeyCode.P))
         {
@@ -67,5 +76,42 @@ public class Mario : MonoBehaviour
         currentState = (State)newState;
         animations.NewState(newState);
         Time.timeScale = 1;
+    }
+    public void CatchItem(ItemType type)
+    {
+        switch(type)
+        {
+            case ItemType.Mushroom:
+                if(currentState == State.Default)
+                {
+                    animations.PowerUp();
+                    Time.timeScale = 0;
+                }
+                else
+                {
+
+                }
+                    break;
+            case ItemType.FireFlower:
+                if (currentState != State.Fire)
+                {
+                    animations.PowerUp();
+                    Time.timeScale = 0;
+                }
+                else
+                {
+
+                }
+                break;
+            case ItemType.Coin:
+                Debug.Log("Coin Collected");
+                break;
+            case ItemType.Life:
+
+                break;
+            case ItemType.Star:
+
+                break;
+        }
     }
 }
