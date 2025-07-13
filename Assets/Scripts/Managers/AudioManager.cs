@@ -19,6 +19,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip clipDie;
     public AudioClip clipFlagPole;
     public AudioClip finishLevel;
+    public AudioClip music;
 
     AudioSource audioSource;
     public static AudioManager Instance;
@@ -29,6 +30,7 @@ public class AudioManager : MonoBehaviour
             Instance = this;
             audioSource = GetComponent<AudioSource>();
         }
+        Music();
     }
     public void PlayJump()
     {
@@ -85,5 +87,9 @@ public class AudioManager : MonoBehaviour
     public void FinishLevel()
     {
         audioSource.PlayOneShot(finishLevel);
+    }
+    public  void Music()
+    {
+        audioSource.PlayOneShot(music);
     }
 }

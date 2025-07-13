@@ -17,6 +17,8 @@ public class AutoMovement : MonoBehaviour
 
     [SerializeField] bool flipSprite= true;
 
+    bool hasBeenVisible;
+
     float timer = 0f;
     private void Awake()
     {
@@ -25,8 +27,23 @@ public class AutoMovement : MonoBehaviour
     }
     private void Start()
     {
-        rb.velocity = new Vector2(speed, rb.velocity.y);
         defaultSpeed = Mathf.Abs(speed);
+        rb.isKinematic = true;
+        movementPause = true;
+    }
+    void Activate()
+    {
+        hasBeenVisible = true;
+        rb.isKinematic = false;
+        rb.velocity = new Vector2(speed, rb.velocity.y);
+        movementPause = false;
+    }
+    private void Update()
+    {
+        if(spriteRenderer.isVisible && !hasBeenVisible)
+        {
+            Activate();
+        }
     }
     private void FixedUpdate()
     {
