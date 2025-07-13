@@ -72,6 +72,8 @@ public class Block : MonoBehaviour
                 {
                     Instantiate(coinBlockPrefab, transform.position, Quaternion.identity);
                     numCoins--;
+                    AudioManager.Instance.PlayCoin();
+                    ScoreManager.Instance.AddPoints(200);
                     Bounce();
                     if (numCoins <= 0)
                     {
@@ -103,6 +105,7 @@ public class Block : MonoBehaviour
     }
     IEnumerator BounceAnimation()
     {
+        AudioManager.Instance.PlayBump();
         bouncing = true;
         float time = 0;
         float duration = 0.1f;
@@ -138,6 +141,8 @@ public class Block : MonoBehaviour
     }
     void Break()
     {
+        AudioManager.Instance.PlayBreak();
+        ScoreManager.Instance.AddPoints(50);
         GameObject brickPiece;
         //Up-Right
         brickPiece =Instantiate(brickPiecePrefab, transform.position, Quaternion.Euler(new Vector3(0,0,0)));
@@ -156,12 +161,8 @@ public class Block : MonoBehaviour
     }
     IEnumerator ShowItem()
     {
+        AudioManager.Instance.PlayPowerUpAppear();
         GameObject newItem = Instantiate(itemPrefab, transform.position, Quaternion.identity); 
-        //AutoMovement autoMovement =newItem.GetComponent<AutoMovement>();
-        //if (autoMovement != null)
-        //{
-        //    autoMovement.enabled = false;
-        //}
         Item item = newItem.GetComponent<Item>();
         item.WaitMove();
 
@@ -178,10 +179,6 @@ public class Block : MonoBehaviour
             yield return null;
         }
         newItem.transform.position = targetPosition;
-        //if(autoMovement != null)
-        //{
-        //    autoMovement.enabled = true;
-        //}
         item.StartMove();
     }
 }

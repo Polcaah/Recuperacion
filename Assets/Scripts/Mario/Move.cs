@@ -177,7 +177,15 @@ public class Move : MonoBehaviour
     {
         if (!isJumping)
         {
-            isJumping = true;
+            if (mario.IsBig())
+            {
+                AudioManager.Instance.PlayBigJump();
+            }
+            else
+            {
+                AudioManager.Instance.PlayJump();
+            }
+                isJumping = true;
             rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
             animations.Jumping(true);
         }

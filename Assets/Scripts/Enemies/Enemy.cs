@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public int points;
     protected Animator animator;
     protected AutoMovement autoMovement;
     protected Rigidbody2D rb;
@@ -46,6 +47,7 @@ public class Enemy : MonoBehaviour
     }
     protected void FlipDie()
     {
+        AudioManager.Instance.PlayFlipDie();
         animator.SetTrigger("Flip");
         rb.velocity = Vector2.zero;
         rb.AddForce(Vector2.up * 6, ForceMode2D.Impulse);
@@ -54,5 +56,10 @@ public class Enemy : MonoBehaviour
             animator.enabled = true;
         }
         GetComponent<Collider2D>().enabled = false;
+        Dead();
+    }
+    protected void Dead()
+    {
+        ScoreManager.Instance.AddPoints(points);
     }
 }

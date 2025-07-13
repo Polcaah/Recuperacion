@@ -135,6 +135,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
+  points: 200
+  startVelocity: {x: 0, y: 0}
 --- !u!114 &-4366280655306485634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,3 +154,5 @@ MonoBehaviour:
   - {fileID: 796475606, guid: 7016d61ae6c96084d8c9be6f4fa74280, type: 3}
   - {fileID: -1846126975, guid: 7016d61ae6c96084d8c9be6f4fa74280, type: 3}
   frameTime: 0.2
+  stop: 0
+  loop: 1

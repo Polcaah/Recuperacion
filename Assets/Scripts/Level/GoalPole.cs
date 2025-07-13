@@ -18,6 +18,8 @@ public class GoalPole : MonoBehaviour
             downFlag = true;
             mario.Goal();
             move = collision.GetComponent<Move>();
+            Vector2 contactPoint = collision.ClosestPoint(transform.position);
+            CalculateHeight(contactPoint.y);
         }
     }
     private void FixedUpdate()
@@ -33,5 +35,34 @@ public class GoalPole : MonoBehaviour
                 move.isFlagDown = true;
             }
         }
+    }
+    void CalculateHeight (float marioPosition)
+    {
+        float size =GetComponent<BoxCollider2D>().bounds.size.y;
+        float minPosition1 = transform.position.y + (size - size/5);
+        float minPosition2 = transform.position.y + (size - 2*size / 5);
+        float minPosition3 = transform.position.y + (size - 3*size / 5);
+        float minPosition4 = transform.position.y + (size - 4*size / 5);
+        if(marioPosition >= minPosition1)
+        {
+            ScoreManager.Instance.AddPoints(5000);
+        }
+        else if (marioPosition >= minPosition2)
+        {
+            ScoreManager.Instance.AddPoints(2000);
+        }
+        else if (marioPosition >= minPosition3)
+        {
+            ScoreManager.Instance.AddPoints(800);
+        }
+        else if (marioPosition >= minPosition4)
+        {
+            ScoreManager.Instance.AddPoints(400);
+        }
+        else
+        {
+            ScoreManager.Instance.AddPoints(100);
+        }
+
     }
 }
