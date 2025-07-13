@@ -10,6 +10,8 @@ public class Item : MonoBehaviour
     public int points;
     [SerializeField] Vector2 startVelocity;
     AutoMovement autoMovement;
+
+    [SerializeField] GameObject floatPointPrefab;
     private void Awake()
     {
         autoMovement = GetComponent<AutoMovement>();
@@ -70,6 +72,10 @@ public class Item : MonoBehaviour
     void CatchItems()
     {
         ScoreManager.Instance.AddPoints(points);
+        GameObject newFloatPoint = Instantiate(floatPointPrefab, transform.position, Quaternion.identity);
+        FloatPoints floatPoints =newFloatPoint.GetComponent<FloatPoints>();
+        floatPoints.numPoints = points;
+
         Destroy(gameObject);
     }
 }

@@ -179,3 +179,4 @@ MonoBehaviour:
   type: 0
   points: 1000
   startVelocity: {x: 0, y: 0}
+  floatPointPrefab: {fileID: 3694825769851489015, guid: 2c163c0516ae9cb4b8844d0a9ac66927, type: 3}

@@ -18,6 +18,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip clipBump;
     public AudioClip clipDie;
     public AudioClip clipFlagPole;
+    public AudioClip finishLevel;
 
     AudioSource audioSource;
     public static AudioManager Instance;
@@ -80,5 +81,9 @@ public class AudioManager : MonoBehaviour
     public void PlayFlagPole()
     {
         audioSource.PlayOneShot(clipFlagPole);
+    }
+    public void FinishLevel()
+    {
+        audioSource.PlayOneShot(finishLevel);
     }
 }

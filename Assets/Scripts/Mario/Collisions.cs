@@ -12,6 +12,8 @@ public class Collisions : MonoBehaviour
     BoxCollider2D col2D;
     Mario mario;
     Move move;
+
+
     private void Awake()
     {
         col2D = GetComponent<BoxCollider2D>();

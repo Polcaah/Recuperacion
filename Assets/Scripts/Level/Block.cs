@@ -17,6 +17,8 @@ public class Block : MonoBehaviour
 
     [SerializeField] GameObject itemPrefab;
 
+    [SerializeField] GameObject floatPointPrefab;
+
     public LayerMask onBlockLayers;
     BoxCollider2D boxCollider;
 
@@ -74,6 +76,9 @@ public class Block : MonoBehaviour
                     numCoins--;
                     AudioManager.Instance.PlayCoin();
                     ScoreManager.Instance.AddPoints(200);
+                    GameObject newFloatPoint = Instantiate(floatPointPrefab, transform.position, Quaternion.identity);
+                    FloatPoints floatPoints = newFloatPoint.GetComponent<FloatPoints>();
+                    floatPoints.numPoints = 200;
                     Bounce();
                     if (numCoins <= 0)
                     {

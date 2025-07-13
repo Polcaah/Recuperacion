@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour
     protected Animator animator;
     protected AutoMovement autoMovement;
     protected Rigidbody2D rb;
+
+    [SerializeField] GameObject floatPointPrefab;
     protected virtual void Awake()
     {
         animator = GetComponent<Animator>();
@@ -60,6 +62,8 @@ public class Enemy : MonoBehaviour
     }
     protected void Dead()
     {
-        ScoreManager.Instance.AddPoints(points);
+        GameObject newFloatPoint = Instantiate(floatPointPrefab, transform.position, Quaternion.identity);
+        FloatPoints floatPoints = newFloatPoint.GetComponent<FloatPoints>();
+        floatPoints.numPoints = points;
     }
 }

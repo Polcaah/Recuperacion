@@ -137,6 +137,7 @@ MonoBehaviour:
   type: 2
   points: 200
   startVelocity: {x: 0, y: 0}
+  floatPointPrefab: {fileID: 3694825769851489015, guid: 2c163c0516ae9cb4b8844d0a9ac66927, type: 3}
 --- !u!114 &-4366280655306485634
 MonoBehaviour:
   m_ObjectHideFlags: 0

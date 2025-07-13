@@ -27,7 +27,6 @@ public class Mario : MonoBehaviour
 
     public bool isCrouched;
 
-    public bool levelFinish;
     private void Awake()
     {
         move = GetComponent<Move>();
@@ -156,7 +155,7 @@ public class Mario : MonoBehaviour
                 break;
             case ItemType.Coin:
                 AudioManager.Instance.PlayCoin();
-                Debug.Log("Coin");
+                LevelManager.Instance.AddCoins();
                 break;
             case ItemType.Life:
 
@@ -188,6 +187,6 @@ public class Mario : MonoBehaviour
     {
         AudioManager.Instance.PlayFlagPole();
         move.DownFlagPole();
-        levelFinish = true;
+        LevelManager.Instance.LevelFinished();
     }
 }

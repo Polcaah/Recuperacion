@@ -199,6 +199,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   points: 200
+  floatPointPrefab: {fileID: 3694825769851489015, guid: 2c163c0516ae9cb4b8844d0a9ac66927, type: 3}
   maxStoppedTimer: 3
   rollingSpeed: 8
   isRolling: 0
