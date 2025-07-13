@@ -13,6 +13,7 @@ public class Move : MonoBehaviour
     [Header("Movement")]
     [SerializeField] float speed;
     [SerializeField] float acceleration;
+    [SerializeField] float currentVelocity;
     [SerializeField] float maxVelocity;
     [SerializeField] float friction;
 
@@ -32,11 +33,20 @@ public class Move : MonoBehaviour
     Animations animations;
 
     bool inputMoveEnabled = true;
+
+    bool isClimbingFlagPole = false;
+    float climbPoleSpeed = 5;
+    public bool isFlagDown;
+
+    bool isAutoWalk;
+    public float autoWalkSpeed = 5f;
+    Mario mario;
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         collisions = GetComponent<Collisions>();
         animations = GetComponent<Animations>();
+        mario = GetComponent<Mario>();
 
         defaultGravity = rb.gravityScale;
     }
@@ -46,91 +56,121 @@ public class Move : MonoBehaviour
         bool grounded = collisions.Grounded();
         animations.Grounded(grounded);
 
-        currentDirection = Direction.None;
-        if (inputMoveEnabled)
+        if (mario.levelFinish)
         {
-            if (Input.GetKeyDown(KeyCode.Space) && grounded)
+            if (grounded && isClimbingFlagPole)
             {
-                Jump();
-            }
-
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-            {
-                currentDirection = Direction.Left;
-            }
-            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-            {
-                currentDirection = Direction.Right;
+                StartCoroutine(JumpOffPole());
             }
         }
-        if (isJumping)
+        else
         {
-            if (rb.velocity.y > 0f && Input.GetKey(KeyCode.Space))
+            currentDirection = Direction.None;
+            if (inputMoveEnabled)
             {
-                jumpTimer += Time.deltaTime;
-            }
-            if (Input.GetKeyUp(KeyCode.Space) && jumpTimer < maxJumpingTime)
-            {
-                rb.gravityScale = defaultGravity * 3f;
-            }
-            if (rb.velocity.y <= 0f)
-            {
-                rb.gravityScale = defaultGravity;
-                if (grounded)
+                if (Input.GetKeyDown(KeyCode.Space) && grounded)
                 {
-                    isJumping = false;
-                    jumpTimer = 0;
-                    animations.Jumping(false);
+                    Jump();
+                }
+
+                if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+                {
+                    currentDirection = Direction.Left;
+                }
+                else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+                {
+                    currentDirection = Direction.Right;
+                }
+            }
+            if (isJumping)
+            {
+                if (rb.velocity.y > 0f && Input.GetKey(KeyCode.Space))
+                {
+                    jumpTimer += Time.deltaTime;
+                }
+                if (Input.GetKeyUp(KeyCode.Space) && jumpTimer < maxJumpingTime)
+                {
+                    rb.gravityScale = defaultGravity * 3f;
+                }
+                if (rb.velocity.y <= 0f)
+                {
+                    rb.gravityScale = defaultGravity;
+                    if (grounded)
+                    {
+                        isJumping = false;
+                        jumpTimer = 0;
+                        animations.Jumping(false);
+                    }
                 }
             }
         }
     }
     private void FixedUpdate()
     {
-        isTurning = false;
-        float currentVelocity = rb.velocity.x;
-
-        if (currentDirection > 0)
+        if (mario.levelFinish)
         {
-            if (currentVelocity < 0)
+            if (isClimbingFlagPole)
             {
-                currentVelocity += (acceleration + friction) * Time.deltaTime;
-                isTurning = true;
+                rb.MovePosition(rb.position + Vector2.down * climbPoleSpeed * Time.fixedDeltaTime);
             }
-            else if (currentVelocity < maxVelocity)
+            else if (isAutoWalk)
             {
-                currentVelocity += acceleration * Time.deltaTime;
-                transform.localScale = new Vector2(1, 1);
-            }
-        }
-
-        else if (currentDirection < 0)
-        {
-            if (currentVelocity > 0)
-            {
-                currentVelocity -= (acceleration + friction) * Time.deltaTime;
-                isTurning = true;
-            }
-            else if (currentVelocity > -maxVelocity)
-            {
-                currentVelocity -= acceleration * Time.deltaTime;
-                transform.localScale = new Vector2(-1, 1);
+                Vector2 velocity =new Vector2(currentVelocity, rb.velocity.y);
+                rb.velocity = velocity;
+                animations.Velocity(Mathf.Abs(currentVelocity));
             }
         }
         else
         {
-            if (currentVelocity > 1f)
-                currentVelocity -= friction * Time.deltaTime;
-            else if (currentVelocity < -1f)
-                currentVelocity += friction * Time.deltaTime;
+            isTurning = false;
+            currentVelocity = rb.velocity.x;
+
+            if (currentDirection > 0)
+            {
+                if (currentVelocity < 0)
+                {
+                    currentVelocity += (acceleration + friction) * Time.deltaTime;
+                    isTurning = true;
+                }
+                else if (currentVelocity < maxVelocity)
+                {
+                    currentVelocity += acceleration * Time.deltaTime;
+                    transform.localScale = new Vector2(1, 1);
+                }
+            }
+
+            else if (currentDirection < 0)
+            {
+                if (currentVelocity > 0)
+                {
+                    currentVelocity -= (acceleration + friction) * Time.deltaTime;
+                    isTurning = true;
+                }
+                else if (currentVelocity > -maxVelocity)
+                {
+                    currentVelocity -= acceleration * Time.deltaTime;
+                    transform.localScale = new Vector2(-1, 1);
+                }
+            }
             else
+            {
+                if (currentVelocity > 1f)
+                    currentVelocity -= friction * Time.deltaTime;
+                else if (currentVelocity < -1f)
+                    currentVelocity += friction * Time.deltaTime;
+                else
+                    currentVelocity = 0f;
+            }
+            if (mario.isCrouched)
+            {
                 currentVelocity = 0f;
+            }
+
+            rb.velocity = new Vector2(currentVelocity, rb.velocity.y);
+
+            animations.Velocity(currentVelocity);
+            animations.Turning(isTurning);
         }
-
-        rb.velocity = new Vector2(currentVelocity, rb.velocity.y);
-
-        animations.Velocity(currentVelocity);
-        animations.Turning(isTurning);
     }
 
     private void Jump()
@@ -154,5 +194,38 @@ public class Move : MonoBehaviour
         rb.velocity = Vector2.zero;
         //Vector2 forceUp = new Vector2(0, 10f);
         rb.AddForce(Vector2.up * 10f, ForceMode2D.Impulse);
+    }
+    public void DownFlagPole()
+    {
+        inputMoveEnabled = false;
+        rb.isKinematic = true;
+        rb.velocity = new Vector2(0, 0f);
+        isClimbingFlagPole = true;
+        isJumping = false;
+        animations.Jumping(false);
+        animations.Climb(true);
+        transform.position = new Vector2(transform.position.x + 0.1f, transform.position.y);
+    }
+    IEnumerator JumpOffPole()
+    {
+        isClimbingFlagPole = false;
+        rb.velocity = Vector2.zero;
+        animations.Pause();
+        yield return new WaitForSeconds(0.25f);
+
+        while (!isFlagDown)
+        {
+            yield return null;
+        }
+        transform.position = new Vector2(transform.position.x + 0.5f, transform.position.y);
+        GetComponent<SpriteRenderer>().flipX = true;
+        yield return new WaitForSeconds(0.25f);
+
+        animations.Climb(false);
+        rb.isKinematic = false;
+        animations.Continue();
+        GetComponent<SpriteRenderer>().flipX = false;
+        isAutoWalk = true;
+        currentVelocity = autoWalkSpeed;
     }
 }

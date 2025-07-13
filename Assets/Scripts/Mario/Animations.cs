@@ -54,4 +54,20 @@ public class Animations : MonoBehaviour
     {
         animator.SetBool("Hurt", hurt);
     }
+    public void Crouch(bool crouch)
+    {
+        animator.SetBool("Crouch", crouch);
+    }
+    public void Climb(bool climb)
+    {
+        animator.SetBool("Climb", climb);
+    }
+    public void Pause()
+    {
+        animator.speed = 0;
+    }
+    public void Continue()
+    {
+        animator.speed = 1;
+    }
 }
