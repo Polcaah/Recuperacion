@@ -42,4 +42,12 @@ public class Animations : MonoBehaviour
     {
         animator.SetTrigger("Hit");
     }
+    public void Shoot()
+    {
+        animator.SetTrigger("Shoot");
+    }
+    public void Invincible(bool activate)
+    {
+        animator.SetBool("Invincible", activate);
+    }
 }

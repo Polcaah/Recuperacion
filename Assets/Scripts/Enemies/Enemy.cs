@@ -17,8 +17,34 @@ public class Enemy : MonoBehaviour
     {
 
     }
+    protected void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.layer == gameObject.layer)
+        {
+            autoMovement.ChangeDirection();
+        }
+    }
     public virtual void Stomped(Transform player)
     {
 
+    }
+    public virtual void HitFireball()
+    {
+        FlipDie();
+    }
+    public virtual void HitStarMan()
+    {
+        FlipDie();
+    }
+    void FlipDie()
+    {
+        animator.SetTrigger("Flip");
+        rb.velocity = Vector2.zero;
+        rb.AddForce(Vector2.up * 6, ForceMode2D.Impulse);
+        if (autoMovement != null)
+        {
+            animator.enabled = true;
+        }
+        GetComponent<Collider2D>().enabled = false;
     }
 }

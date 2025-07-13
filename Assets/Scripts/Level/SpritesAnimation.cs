@@ -11,7 +11,7 @@ public class SpritesAnimation : MonoBehaviour
     int animationFrame = 0;
 
     public bool stop;
-
+    [SerializeField] bool loop = true;
     SpriteRenderer spriteRenderer;
     private void Awake()
     {
@@ -23,15 +23,28 @@ public class SpritesAnimation : MonoBehaviour
     }
     IEnumerator Animation()
     {
-        while(!stop)
+        if (loop)
         {
-            spriteRenderer.sprite = sprites[animationFrame];
-            animationFrame++;
-            if(animationFrame >= sprites.Length)
+            while (!stop)
             {
-                animationFrame = 0;
+                spriteRenderer.sprite = sprites[animationFrame];
+                animationFrame++;
+                if (animationFrame >= sprites.Length)
+                {
+                    animationFrame = 0;
+                }
+                yield return new WaitForSeconds(frameTime);
             }
-            yield return new WaitForSeconds(frameTime);
+        }
+        else
+        {
+            while(animationFrame < sprites.Length)
+            {
+                spriteRenderer.sprite = sprites[animationFrame];
+                animationFrame++;
+                yield return new WaitForSeconds(frameTime);
+            }
+            Destroy(gameObject);
         }
     }
 }

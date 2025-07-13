@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Mario : MonoBehaviour
 {
-    enum State { Default=0, Big=1, Fire=2};
+    enum State { Default = 0, Big = 1, Fire = 2 };
     State currentState = State.Default;
     [SerializeField] GameObject stompBox;
     [SerializeField] GameObject headBox;
@@ -12,6 +12,13 @@ public class Mario : MonoBehaviour
     Collisions collisions;
     Animations animations;
     Rigidbody2D rb;
+
+    [SerializeField] GameObject fireballPrefab;
+    [SerializeField] Transform shootPos;
+
+    [SerializeField] public bool isInvincible;
+    [SerializeField] float invincibleTime;
+    float invincibleTimer;
 
     bool isDead;
     private void Awake()
@@ -23,15 +30,31 @@ public class Mario : MonoBehaviour
     }
     private void Update()
     {
-        if (rb.velocity.y < 0 && !isDead)
+        if (!isDead)
         {
-            stompBox.SetActive(true);
+            if (rb.velocity.y < 0 && !isDead)
+            {
+                stompBox.SetActive(true);
+            }
+            else
+            {
+                stompBox.SetActive(false);
+            }
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                Shoot();
+            }
+            if (isInvincible)
+            {
+                invincibleTimer -= Time.deltaTime;
+                if (invincibleTimer <= 0)
+                {
+                    isInvincible = false;
+                    animations.Invincible(false);
+                }
+            }
         }
-        else
-        {
-            stompBox.SetActive(false);
-        }
-        if(rb.velocity.y > 0)
+        if (rb.velocity.y > 0)
         {
             headBox.SetActive(true);
         }
@@ -79,10 +102,10 @@ public class Mario : MonoBehaviour
     }
     public void CatchItem(ItemType type)
     {
-        switch(type)
+        switch (type)
         {
             case ItemType.Mushroom:
-                if(currentState == State.Default)
+                if (currentState == State.Default)
                 {
                     animations.PowerUp();
                     Time.timeScale = 0;
@@ -91,7 +114,7 @@ public class Mario : MonoBehaviour
                 {
 
                 }
-                    break;
+                break;
             case ItemType.FireFlower:
                 if (currentState != State.Fire)
                 {
@@ -110,8 +133,19 @@ public class Mario : MonoBehaviour
 
                 break;
             case ItemType.Star:
-
+                isInvincible = true;
+                animations.Invincible(true);
+                invincibleTimer = invincibleTime;
                 break;
+        }
+    }
+    void Shoot()
+    {
+        if (currentState == State.Fire)
+        {
+            GameObject newfireBall = Instantiate(fireballPrefab, shootPos.position, Quaternion.identity);
+            newfireBall.GetComponent<Fireball>().direction = transform.localScale.x;
+            animations.Shoot();
         }
     }
 }
