@@ -82,8 +82,25 @@ public class Collisions : MonoBehaviour
             } 
         }
     }
+    public void HurtCollision(bool activate)
+    {
+        if (activate)
+        {
+            gameObject.layer = LayerMask.NameToLayer("OnlyGround");
+            transform.GetChild(0).gameObject.layer = LayerMask.NameToLayer("OnlyGround");
+        }
+        else
+        {
+            gameObject.layer = LayerMask.NameToLayer("Player");
+            transform.GetChild(0).gameObject.layer = LayerMask.NameToLayer("Player");
+        }
+    }
     public void Dead()
     {
         gameObject.layer = LayerMask.NameToLayer("PlayerDead");
+        foreach (Transform t in transform)
+        {
+            t.gameObject.layer = LayerMask.NameToLayer("PlayerDead");
+        }
     }
 }

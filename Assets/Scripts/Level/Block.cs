@@ -16,40 +16,82 @@ public class Block : MonoBehaviour
     bool isEmpty;
 
     [SerializeField] GameObject itemPrefab;
-    private void OnTriggerEnter2D(Collider2D collision)
+
+    public LayerMask onBlockLayers;
+    BoxCollider2D boxCollider;
+
+    private void Awake()
     {
-        if (collision.CompareTag("HeadMario"))
+        boxCollider = GetComponent<BoxCollider2D>();
+    }
+    void OnTheBlock()
+    {
+        Collider2D[] colliders = Physics2D.OverlapBoxAll(boxCollider.bounds.center + Vector3.up*boxCollider.bounds.extents.y, boxCollider.bounds.size*0.5f, 0, onBlockLayers);
+        foreach(Collider2D c in colliders)
         {
-            collision.transform.parent.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-            if (isBreakable)
+            Enemy enemy = c.GetComponent<Enemy>();
+            if (enemy != null)
+            {
+                enemy.HitBelowBlock();
+            }
+            else
+            {
+                Item item = c.GetComponent<Item>();
+                if (item != null)
+                {
+                    item.HitBelowBlock();
+                }
+            }
+        }
+    }
+    private void OnDrawGizmos()
+    {
+        if (boxCollider != null)
+        {
+            Gizmos.DrawWireCube(boxCollider.bounds.center + Vector3.up * boxCollider.bounds.extents.y, boxCollider.bounds.size * 0.5f);
+        }
+    }
+    public void HeadCollision(bool marioBig)
+    {
+        if (isBreakable)
+        {
+            if (marioBig)
             {
                 Break();
             }
-            else if (!isEmpty)
+            else
             {
-                if (numCoins > 0)
+                Bounce();
+            }
+        }
+        else if (!isEmpty)
+        {
+            if (numCoins > 0)
+            {
+                if (!bouncing)
                 {
-                    if (!bouncing)
+                    Instantiate(coinBlockPrefab, transform.position, Quaternion.identity);
+                    numCoins--;
+                    Bounce();
+                    if (numCoins <= 0)
                     {
-                        Instantiate(coinBlockPrefab, transform.position, Quaternion.identity);
-                        numCoins--;
-                        Bounce();
-                        if (numCoins <= 0)
-                        {
-                            isEmpty = true;
-                        }
-                    }
-                }
-                else if (itemPrefab != null)
-                {
-                    if (!bouncing)
-                    {
-                        StartCoroutine(ShowItem());
-                        Bounce();
                         isEmpty = true;
                     }
                 }
             }
+            else if (itemPrefab != null)
+            {
+                if (!bouncing)
+                {
+                    StartCoroutine(ShowItem());
+                    Bounce();
+                    isEmpty = true;
+                }
+            }
+        }
+        if (!isEmpty)
+        {
+            OnTheBlock();
         }
     }
     void Bounce()

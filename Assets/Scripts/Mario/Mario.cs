@@ -20,6 +20,9 @@ public class Mario : MonoBehaviour
     [SerializeField] float invincibleTime;
     float invincibleTimer;
 
+    [SerializeField] bool isHurt;
+    [SerializeField] float hurtTime;
+    float hurtTimer;
     bool isDead;
     private void Awake()
     {
@@ -53,6 +56,14 @@ public class Mario : MonoBehaviour
                     animations.Invincible(false);
                 }
             }
+            if (isHurt)
+            {
+                hurtTimer -= Time.deltaTime;
+                if(hurtTime <= 0)
+                {
+                    EndHurt();
+                }
+            }
         }
         if (rb.velocity.y > 0)
         {
@@ -74,15 +85,32 @@ public class Mario : MonoBehaviour
     }
     public void Hit()
     {
-        if (currentState == State.Default)
+        if (!isHurt)
         {
-            Dead();
+            if (currentState == State.Default)
+            {
+                Dead();
+            }
+            else
+            {
+                Time.timeScale = 0;
+                animations.Hit();
+                StartHurt();
+            }
         }
-        else
-        {
-            Time.timeScale = 0;
-            animations.Hit();
-        }
+    }
+    void StartHurt()
+    {
+        isHurt = true;
+        animations.Hurt(true);
+        hurtTimer = hurtTime;
+        collisions.HurtCollision(true);
+    }
+    void EndHurt()
+    {
+        isHurt = false;
+        animations.Hurt(false);
+        collisions.HurtCollision(false);
     }
     public void Dead()
     {
@@ -136,6 +164,7 @@ public class Mario : MonoBehaviour
                 isInvincible = true;
                 animations.Invincible(true);
                 invincibleTimer = invincibleTime;
+                EndHurt();
                 break;
         }
     }
@@ -147,5 +176,9 @@ public class Mario : MonoBehaviour
             newfireBall.GetComponent<Fireball>().direction = transform.localScale.x;
             animations.Shoot();
         }
+    }
+    public bool IsBig()
+    {
+        return currentState != State.Default;
     }
 }

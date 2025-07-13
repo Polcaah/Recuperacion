@@ -9,6 +9,7 @@ public class Koopa : Enemy
     float stoppedTimer;
 
     [SerializeField] float rollingSpeed;
+    [SerializeField] bool isRolling;
     protected override void Update()
     {
         base.Update();
@@ -23,6 +24,7 @@ public class Koopa : Enemy
     }
     public override void Stomped(Transform player)
     {
+        isRolling = false;
         if (!isHidden)
         {
             isHidden = true;
@@ -46,11 +48,23 @@ public class Koopa : Enemy
                     autoMovement.speed = -rollingSpeed;
                 }
                 autoMovement.ContinueMovement(new Vector2(autoMovement.speed, 0f));
+                isRolling = true;
             }
         }
             gameObject.layer = LayerMask.NameToLayer("OnlyGround");
         Invoke("ResetLayer", 0.1f);
         stoppedTimer = 0;
+    }
+    public override void HitRollingShell()
+    {
+        if (!isRolling)
+        {
+            FlipDie();
+        }
+        else
+        {
+            autoMovement.ChangeDirection();
+        }
     }
     void ResetLayer()
     {
@@ -62,5 +76,15 @@ public class Koopa : Enemy
         isHidden = false;
         animator.SetBool("Hidden", isHidden);
         stoppedTimer = 0;
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (isRolling)
+        {
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+            {
+                collision.gameObject.GetComponent<Enemy>().HitRollingShell();
+            }
+        }
     }
 }

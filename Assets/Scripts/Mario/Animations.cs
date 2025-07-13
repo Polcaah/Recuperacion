@@ -50,4 +50,8 @@ public class Animations : MonoBehaviour
     {
         animator.SetBool("Invincible", activate);
     }
+    public void Hurt(bool hurt)
+    {
+        animator.SetBool("Hurt", hurt);
+    }
 }
