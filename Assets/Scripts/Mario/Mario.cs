@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Mario : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class Mario : MonoBehaviour
     Collisions collisions;
     Animations animations;
     Rigidbody2D rb;
+    GameManager gm;
 
     [SerializeField] GameObject fireballPrefab;
     [SerializeField] Transform shootPos;
@@ -33,6 +35,7 @@ public class Mario : MonoBehaviour
         collisions = GetComponent<Collisions>();
         animations = GetComponent<Animations>();
         rb = GetComponent<Rigidbody2D>();
+        gm = GetComponent<GameManager>();
     }
     private void Update()
     {
@@ -70,7 +73,7 @@ public class Mario : MonoBehaviour
             if (isHurt)
             {
                 hurtTimer -= Time.deltaTime;
-                if(hurtTime <= 0)
+                if(hurtTime < 0)
                 {
                     EndHurt();
                 }
@@ -125,6 +128,7 @@ public class Mario : MonoBehaviour
             move.Dead();
             collisions.Dead();
             animations.Dead();
+            StartCoroutine(Respawn());
         }
     }
     void ChangeState(int newState)
@@ -188,5 +192,10 @@ public class Mario : MonoBehaviour
         AudioManager.Instance.PlayFlagPole();
         move.DownFlagPole();
         LevelManager.Instance.LevelFinished();
+    }
+    IEnumerator Respawn()
+    {
+        yield return new WaitForSeconds(4.5f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

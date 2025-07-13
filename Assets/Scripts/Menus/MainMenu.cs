@@ -11,7 +11,7 @@ public class MainMenu : MonoBehaviour
     void Start()
     {
         if (startButton != null)
-            startButton.onClick.AddListener(() => ChangeScene("Level"));
+            startButton.onClick.AddListener(() => ChangeScene("Level_1-1"));
 
         if (settingsButton != null)
             settingsButton.onClick.AddListener(() => ChangeScene("Settings"));

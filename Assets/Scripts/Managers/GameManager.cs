@@ -1,18 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SearchService;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] HUD hud;
+    [SerializeField] Mario mario;
 
-    // Update is called once per frame
-    void Update()
+    bool isRespawning;
+
+    public static GameManager Instance;
+    private void Awake()
     {
-        
+        if(Instance == null)
+        {
+            Instance = this;
+        }
+    }
+    public void OutOfTime()
+    {
+        if (!isRespawning)
+        {
+            mario.Dead();
+        }
+    }
+    public void KillZone()
+    {
+        if (!isRespawning)
+        {
+            AudioManager.Instance.PlayDie();
+            mario.Dead();
+        }
     }
 }
